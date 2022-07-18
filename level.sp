@@ -1,8 +1,6 @@
 #include <sourcemod>
 #include <sdktools>
-
-#pragma semicolon 1
-#pragma newdecls required
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "0.00"
 
@@ -24,20 +22,34 @@ public void OnPluginStart()
 	 */
 	CreateConVar("sm_levels_version", PLUGIN_VERSION, "Standard plugin version ConVar. Please don't change me!", FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	RegConsoleCmd("ebat_pizdec", GiveNotoriety);
+	RegConsoleCmd("ebat_pizdec2", GiveNotoriety);
 }
 
 public Action GiveNotoriety(int client, int args)
 {
 	if (!client)return Plugin_Handled;
-
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 1000.0);
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.1);
 	
 	return Plugin_Handled;
 }
 
+public Hook_OnPlayerResourceThinkPost(ent)
+{
+    new client;
+	int level = 100;
+    for(client = 1; client <= MaxClients; client++)
+    {
+        if(!IsClientInGame(client)) continue;
+        SetEntProp(ent, Prop_Send, "m_iExp", 10000, _, client);
+        SetEntProp(ent, Prop_Send, "m_iScore", 1000, _, client);
+        //SetEntProp(client, Prop_Send, "m_nLastRoundNotoriety", iPlayerLevel[client]);
+    }
+}
+
 public void OnMapStart()
 {
+	SDKHook(GetPlayerResourceEntity(), SDKHook_ThinkPost, Hook_OnPlayerResourceThinkPost);
 	/**
 	 * @note Precache your models, sounds, etc. here!
 	 * Not in OnConfigsExecuted! Doing so leads to issues.
