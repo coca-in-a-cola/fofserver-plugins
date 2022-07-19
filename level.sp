@@ -31,6 +31,8 @@ public Action GiveNotoriety(int client, int args)
 	SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 1000.0);
 	SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.1);
 	
+    SetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iExp", 10000, _, client);
+    SetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iScore", 1000, _, client);
 	return Plugin_Handled;
 }
 
@@ -49,7 +51,7 @@ public Hook_OnPlayerResourceThinkPost(ent)
 
 public void OnMapStart()
 {
-	SDKHook(GetPlayerResourceEntity(), SDKHook_ThinkPost, Hook_OnPlayerResourceThinkPost);
+	//SDKHook(GetPlayerResourceEntity(), SDKHook_ThinkPost, Hook_OnPlayerResourceThinkPost);
 	/**
 	 * @note Precache your models, sounds, etc. here!
 	 * Not in OnConfigsExecuted! Doing so leads to issues.
